@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="utf-8" > <!--http-equiv="content-type" content="text/html;--> 
+		<title>Leaflet NSIDC Polar Stereographic</title>
+		
+		<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+		<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+		<script src="./leaflet.ajax.min.js"></script>
+		<script src="./proj4.js"></script>
+		<script src="./proj4leaflet.js"></script>
+
+
+	</head>
+	<body>
+		<div id="mapid" style="height:700px"></div>
+		
+		
+		<script>
+			// Possible way to introduce a custom projection?
+			proj4.defs('Ortho', '+proj=ortho +lat_0=90 +lon_0=-45 +ellps=WGS84 +x_0=0 +y_0=0');
+			console.log(proj4.defs('EPSG:4326'))
+			
+			// NSIDC northern stereographic
+			var crs = new L.Proj.CRS('EPSG:3411',
+			  '+proj=stere +lat_0=90 +lon_0=-45 +lat_ts=-80 +k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
+			  {
+				resolutions: [
+				  8192, 4096, 2048, 1024, 512, 256, 128
+				],
+				origin: [0, 0]
+			  });
+
+			var mymap = L.map('mapid', {crs: crs}).setView([51.505, -0.09], 6);
+			
+			var geojsonLayer = new L.GeoJSON.AJAX("world-countries.json");       
+			geojsonLayer.addTo(mymap);
+		</script>
+	</body>
+</html>
